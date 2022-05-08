@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import validator from "validator";
 const UserSchema = new mongoose.Schema({
   name: {
@@ -23,8 +23,18 @@ const UserSchema = new mongoose.Schema({
     minlength: 6,
     trim: true,
   },
-  lastName: { type: String, maxlength: 20, trim: true, default: "myLastName" },
-  location: { type: String, maxlength: 20, trim: true, default: "myCity" },
+  lastName: {
+    type: String,
+    maxlength: 20,
+    trim: true,
+    default: "myLastName",
+  },
+  location: {
+    type: String,
+    maxlength: 20,
+    trim: true,
+    default: "myCity",
+  },
 });
 
 export default mongoose.model("User", UserSchema);

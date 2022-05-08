@@ -5,6 +5,7 @@ import notFoundMiddleware from "./middleware/not-found.js";
 import connectDB from "./db/connect.js";
 import authRouter from "./routes/authRoutes.js";
 import jobRouter from "./routes/jobsRoutes.js";
+import "express-async-error";
 
 dotenv.config();
 const app = express();
