@@ -5,10 +5,12 @@ import notFoundMiddleware from "./middleware/not-found.js";
 import connectDB from "./db/connect.js";
 import authRouter from "./routes/authRoutes.js";
 import jobRouter from "./routes/jobsRoutes.js";
+import cors from "cors";
 
 dotenv.config();
 const app = express();
 
+app.use(cors());
 app.use(express.json()); //check this
 
 app.get("/", (req, res) => {
