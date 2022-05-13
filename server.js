@@ -6,10 +6,12 @@ import connectDB from "./db/connect.js";
 import authRouter from "./routes/authRoutes.js";
 import jobRouter from "./routes/jobsRoutes.js";
 import cors from "cors";
-
+import morgan from "morgan";
 dotenv.config();
 const app = express();
-
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
+}
 app.use(cors());
 app.use(express.json()); //check this
 

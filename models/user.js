@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema({
     default: "myCity",
   },
 });
-
+//bcrypt
 UserSchema.pre("save", async function () {
   //setup as async if you function is using promises
 
@@ -48,6 +48,12 @@ UserSchema.pre("save", async function () {
   console.log(this.password);
 });
 
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch;
+};
+
+//JWT
 UserSchema.methods.createJWT = function () {
   return jwt.sign({ userId: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_LIFETIME,
