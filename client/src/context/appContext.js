@@ -7,6 +7,12 @@ import {
   REGISTER_USER_BEGIN,
   REGISTER_USER_SUCCESS,
   REGISTER_USER_ERROR,
+  LOGIN_USER_ERROR,
+  LOGIN_USER_BEGIN,
+  LOGIN_USER_SUCCESS,
+  SETUP_USER_BEGIN,
+  SETUP_USER_SUCCESS,
+  SETUP_USER_ERROR,
 } from "./actions";
 
 const user = JSON.parse(localStorage.getItem("user"));
@@ -70,8 +76,59 @@ function AppProvider({ children }) {
     }
     clearAlert();
   };
+  const loginUser = async (currentUser) => {
+    dispatch({ type: LOGIN_USER_BEGIN });
+    try {
+      const response = await axios.post("/api/v1/auth/login", currentUser);
+      // setTimeout(() => {
+      //   console.log(response);
+      // }, 3000);
+      const { user, token, location } = response.data;
+
+      dispatch({
+        type: LOGIN_USER_SUCCESS,
+        payload: { user, token, location },
+      });
+      //local storage
+      addUserToLocalStorage({ user, token, location });
+    } catch (error) {
+      dispatch({
+        type: LOGIN_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+    clearAlert();
+  };
+  const setupUser = async ({ currentUser, endPoint, alertText }) => {
+    dispatch({ type: SETUP_USER_BEGIN });
+    try {
+      const response = await axios.post(
+        `/api/v1/auth/${endPoint}`,
+        currentUser
+      );
+      // setTimeout(() => {
+      //   console.log(response);
+      // }, 3000);
+      const { user, token, location } = response.data;
+
+      dispatch({
+        type: SETUP_USER_SUCCESS,
+        payload: { user, token, location, alertText },
+      });
+      //local storage
+      addUserToLocalStorage({ user, token, location });
+    } catch (error) {
+      dispatch({
+        type: SETUP_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+    clearAlert();
+  };
   return (
-    <AppContext.Provider value={{ ...state, displayAlert, registerUser }}>
+    <AppContext.Provider
+      value={{ ...state, displayAlert, registerUser, loginUser, setupUser }}
+    >
       {children}
     </AppContext.Provider>
   );
