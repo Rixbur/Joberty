@@ -60,8 +60,8 @@ const reducer = (state, action) => {
   if (action.type === LOGOUT_USER) {
     return {
       ...initialState,
-      user: "",
-      token: "",
+      user: null,
+      token: null,
       location: "",
       jobLocation: "",
     };

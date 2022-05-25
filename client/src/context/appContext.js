@@ -86,7 +86,13 @@ function AppProvider({ children }) {
   };
   return (
     <AppContext.Provider
-      value={{ ...state, displayAlert, setupUser, toggleSideBar, logoutUser }}
+      value={{
+        ...state,
+        displayAlert,
+        setupUser,
+        toggleSideBar,
+        logoutUser,
+      }}
     >
       {children}
     </AppContext.Provider>
