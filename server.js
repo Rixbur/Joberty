@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import errorHandlerMiddleware from "./middleware/error-handler.js";
 import notFoundMiddleware from "./middleware/not-found.js";
+import authencticateUser from "./middleware/auth.js";
+
 import connectDB from "./db/connect.js";
 import authRouter from "./routes/authRoutes.js";
 import jobRouter from "./routes/jobsRoutes.js";
@@ -19,7 +21,9 @@ app.get("/", (req, res) => {
   res.send("Welcome!");
 });
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/jobs", jobRouter);
+app.use("/api/v1/jobs", authencticateUser, jobRouter);
+// app.use("/api/v1", authencticateUser);
+
 app.use(notFoundMiddleware);
 
 app.use(errorHandlerMiddleware);
