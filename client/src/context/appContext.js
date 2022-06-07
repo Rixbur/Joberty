@@ -9,6 +9,9 @@ import {
   SETUP_USER_ERROR,
   TOGGLE_SIDEBAR,
   LOGOUT_USER,
+  UPDATE_USER_BEGIN,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_ERROR,
 } from "./actions";
 
 const user = JSON.parse(localStorage.getItem("user"));
@@ -30,6 +33,39 @@ const AppContext = React.createContext();
 
 function AppProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  //axios
+  const authFetch = axios.create({
+    baseURL: "/api/v1",
+    //headers are not visible if we set it up like this
+    //or in interceptors
+    // headers: {
+    //   Authorization: `Bearer ${state.token}`,
+    // },
+  });
+  //fetch request
+  authFetch.interceptors.request.use(
+    (config) => {
+      config.headers.common["Authorization"] = `Bearer ${state.token}`;
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+  //fetch response
+  authFetch.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      console.log(error.response);
+      if (error.response.status === 401) {
+        console.log("AUTH ERROR");
+      }
+      return Promise.reject(error);
+    }
+  );
+
   const displayAlert = () => {
     dispatch({ type: DISPLAY_ALERT });
     clearAlert();
@@ -50,7 +86,7 @@ function AppProvider({ children }) {
     localStorage.removeItem("token");
     localStorage.removeItem("location");
   };
-
+  //setup user
   const setupUser = async ({ currentUser, endPoint, alertText }) => {
     dispatch({ type: SETUP_USER_BEGIN });
     try {
@@ -80,12 +116,32 @@ function AppProvider({ children }) {
   const toggleSideBar = () => {
     dispatch({ type: TOGGLE_SIDEBAR });
   };
+  //logout user
   const logoutUser = () => {
     dispatch({ type: LOGOUT_USER });
     removeUserFromLocalStorage();
   };
-  const updateUser = (currentUser) => {
-    console.log(currentUser);
+  //update user
+  const updateUser = async (currentUser) => {
+    dispatch({ type: UPDATE_USER_BEGIN });
+    try {
+      const { data } = await authFetch.patch("/auth/updateUser", currentUser);
+      const { user, location, token } = data;
+
+      dispatch({
+        type: UPDATE_USER_SUCCESS,
+        payload: { user, location, token },
+      });
+      addUserToLocalStorage({ user, location, token });
+    } catch (error) {
+      if (error.response.status !== 401) {
+        dispatch({
+          type: UPDATE_USER_ERROR,
+          payload: { msg: error.response.data.msg },
+        });
+      }
+    }
+    clearAlert();
   };
   return (
     <AppContext.Provider

@@ -26,7 +26,7 @@ function Profile() {
   };
   return (
     <Wrapper>
-      <form className="form" onSumbit={handleSubmit}>
+      <form className="form" onSubmit={handleSubmit}>
         {showAlert && <Alert />}
         <div className="form-center">
           <FormRow
@@ -54,16 +54,11 @@ function Profile() {
             value={location}
             handleChange={(e) => setLocation(e.target.value)}
           ></FormRow>
-          <button
-            className="btn btn-block"
-            type="submit"
-            disabled={isLoading}
-            onClick={handleSubmit}
-          >
+          <button className="btn btn-block" type="submit" disabled={isLoading}>
             {isLoading ? "Please wait...." : "Save Changes"}
           </button>
         </div>
-      </form>{" "}
+      </form>
     </Wrapper>
   );
 }
