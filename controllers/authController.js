@@ -65,8 +65,23 @@ const login = async (req, res, next) => {
   }
 };
 const updateUser = async (req, res) => {
+  const { email, name, lastName, location } = req.body;
+  if (!email || !name || !lastName || !location) {
+    throw new BadRequest("Please provide all values");
+  }
+  const user = await UserModel.findOne({ _id: req.user.userId });
+  user.email = email;
+  user.name = name;
+  user.lastName = lastName;
+  user.location = location;
+
+  await user.save();
+
+  //optional to recreate token, but should be done
+  const token = user.createJWT();
+  res.status(StatusCodes.OK).json({ user, token, location: user.location });
+
   console.log(req.user);
-  res.send("Update user");
 };
 
 export { register, login, updateUser };

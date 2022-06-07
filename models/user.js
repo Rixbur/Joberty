@@ -41,11 +41,18 @@ const UserSchema = new mongoose.Schema({
 });
 //bcrypt
 UserSchema.pre("save", async function () {
+  //both of these function can be used to check what
+  //is changed
+  //if we are changing password, we need to do everything from zero;
+  // console.log(this.modifiedPaths());
+  // console.log(this.isModified("name"));
   //setup as async if you function is using promises
 
+  if (!this.isModified("password")) {
+    return;
+  }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  console.log(this.password);
 });
 
 UserSchema.methods.comparePassword = async function (candidatePassword) {
