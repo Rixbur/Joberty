@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes";
 class BadRequest extends CustomAPIError {
   constructor(message) {
     super(message);
-    this.statuCodes = StatusCodes.BadRequest;
+    this.statusCode = StatusCodes.BadRequest;
   }
 }
 

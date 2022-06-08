@@ -48,6 +48,7 @@ const login = async (req, res, next) => {
       throw new UnauthenticatedError("Invalid Credentials");
     }
     const token = user.createJWT();
+    // user.password = undefined;
     res.status(StatusCodes.OK).json({
       // we are hardcoding here to avoid returning password, because YOU CANNOT ignore password in .create query, only in other ones
       // or set user.password = undefined
@@ -64,24 +65,27 @@ const login = async (req, res, next) => {
     next(error);
   }
 };
-const updateUser = async (req, res) => {
-  const { email, name, lastName, location } = req.body;
-  if (!email || !name || !lastName || !location) {
-    throw new BadRequest("Please provide all values");
+const updateUser = async (req, res, next) => {
+  try {
+    const { email, name, lastName, location } = req.body;
+    if (!email || !name || !lastName || !location) {
+      throw new BadRequest("Please provide all values");
+    }
+    const user = await UserModel.findOne({ _id: req.user.userId });
+    user.email = email;
+    user.name = name;
+    user.lastName = lastName;
+    user.location = location;
+
+    await user.save();
+
+    //optional to recreate token, but should be done
+    const token = user.createJWT();
+    res.status(StatusCodes.OK).json({ user, token, location: user.location });
+  } catch (error) {
+    console.log(req.user);
+    next(error);
   }
-  const user = await UserModel.findOne({ _id: req.user.userId });
-  user.email = email;
-  user.name = name;
-  user.lastName = lastName;
-  user.location = location;
-
-  await user.save();
-
-  //optional to recreate token, but should be done
-  const token = user.createJWT();
-  res.status(StatusCodes.OK).json({ user, token, location: user.location });
-
-  console.log(req.user);
 };
 
 export { register, login, updateUser };
