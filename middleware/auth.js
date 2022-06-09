@@ -17,6 +17,7 @@ const auth = async (req, res, next) => {
         return result;
       }
     });
+    //attaching to request body, so we can use userId in jobs
     req.user = { userId: payload.userId };
     next();
   } catch (error) {
