@@ -17,6 +17,9 @@ import {
   CREATE_JOB_BEGIN,
   CREATE_JOB_SUCCESS,
   CREATE_JOB_ERROR,
+  GET_JOBS_BEGIN,
+  GET_JOBS_SUCCESS,
+  SET_EDIT_JOB,
 } from "./actions";
 
 const user = JSON.parse(localStorage.getItem("user"));
@@ -40,6 +43,10 @@ const initialState = {
   jobType: "full-time",
   statusOptions: ["interview", "declined", "pending"],
   status: "pending",
+  jobs: [],
+  totalJobs: 0,
+  numOfPages: 1,
+  page: 1,
 };
 
 const AppContext = React.createContext();
@@ -189,6 +196,40 @@ function AppProvider({ children }) {
     }
     clearAlert();
   };
+  const getJobs = async () => {
+    const { page, search, searchStatus, searchType, sort } = state;
+
+    // let url = `/jobs?page=${page}&status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
+    // if (search) {
+    //   url = url + `&search=${search}`;
+    // }
+    dispatch({ type: GET_JOBS_BEGIN });
+    try {
+      const { data } = await authFetch("/jobs");
+      const { jobs, totalJobs, numOfPages } = data;
+      dispatch({
+        type: GET_JOBS_SUCCESS,
+        payload: {
+          jobs,
+          totalJobs,
+          numOfPages,
+        },
+      });
+    } catch (error) {
+      logoutUser();
+    }
+    clearAlert();
+  };
+
+  const setEditJob = (id) => {
+    dispatch({ type: SET_EDIT_JOB, payload: { id } });
+  };
+  const editJob = () => {
+    console.log("Edit job");
+  };
+  const deleteJob = (id) => {
+    console.log(`delete:${id}`);
+  };
   return (
     <AppContext.Provider
       value={{
@@ -201,6 +242,10 @@ function AppProvider({ children }) {
         handleChange,
         clearValues,
         createJob,
+        getJobs,
+        setEditJob,
+        deleteJob,
+        editJob,
       }}
     >
       {children}
