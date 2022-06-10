@@ -1,9 +1,15 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import main from "../assets/images/main.svg";
 import Wrapper from "../assets/wrappers/LandingPage";
 import { Logo } from "../components";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
+  const navigate = useNavigate();
+  const navigateToRoot = () => {
+    navigate("/register");
+  };
   return (
     <Wrapper>
       <nav>
@@ -20,7 +26,10 @@ const Landing = () => {
             charcoal bitters hoodie shabby chic chillwave jianbing readymade
             shoreditch mustache live-edge
           </p>
-          <button className="btn btn-hero">Login/Register</button>
+
+          <button className="btn btn-hero" onClick={navigateToRoot}>
+            Login/Register
+          </button>
         </div>
         <img src={main} alt="job hunt" className="img main-img"></img>
       </div>

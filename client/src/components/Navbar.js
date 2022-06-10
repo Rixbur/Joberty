@@ -28,13 +28,9 @@ function Navbar() {
           >
             <FaUserCircle>{user?.name}</FaUserCircle>
           </button>
-          <div className={showLogout ? "dropdown show-dropdown" : "dropdown "}>
-            <button
-              type="button"
-              className="dropdown-btn"
-              onClick={() => logoutUser()}
-            >
-              Logout
+          <div className={showLogout ? "dropdown show-dropdown" : "dropdown"}>
+            <button type="button" className="dropdown-btn" onClick={logoutUser}>
+              logout
             </button>
           </div>
         </div>
