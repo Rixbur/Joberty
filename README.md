@@ -1,4 +1,4 @@
-#Jobify
+#Jobify </br>
 ##Track your job applications and their status
 
 ###How to setup application
