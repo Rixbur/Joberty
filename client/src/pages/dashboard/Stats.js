@@ -1,7 +1,7 @@
-import React from "react";
+import { StatsContainer } from "../../components";
 
-function Stats() {
-  return <h1> Stats </h1>;
-}
+const Stats = () => {
+  return <StatsContainer />;
+};
 
 export default Stats;

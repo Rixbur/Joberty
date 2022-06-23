@@ -1,5 +1,4 @@
 import React from "react";
-import { useAppContext } from "../context/appContext";
 
 export default function FormRowSelect({
   labelText,
